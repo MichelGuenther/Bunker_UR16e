@@ -21,25 +21,28 @@ Befehle:
 sudo apt update
 sudo apt install ros-jazzy-ur-robot-driver ros-jazzy-ur-moveit-config ros-jazzy-teleop-twist-keyboard -y
 ```
-2. Workspace & Bunker-Treiber
+2. Workspace & Automatisches Setup
 
-Der Bunker-Treiber muss im lokalen Workspace gebaut werden. Ein bekannter Bug im SDK (Motor-Schleife) wird hierbei automatisch korrigiert.
+Anstatt alles manuell zu machen, nutzt du das vorbereitete Setup-Skript. Es erstellt den Workspace, clont die AgileX-Repos und fix die fehlerhafte Motor-Schleife im SDK automatisch.
+Bash
+```
+# In dein Projekt-Verzeichnis gehen
+cd ~/Bunker_UR16e
 
-Befehle:
+# Skript ausführbar machen und starten
+chmod +x scripts/setup_workspace.sh
+./scripts/setup_workspace.sh
 ```
-mkdir -p ~/bunker_ur16e_ws/src
-cd ~/bunker_ur16e_ws/src
-git clone https://github.com/agilexrobotics/ugv_sdk.git
-git clone https://github.com/agilexrobotics/bunker_ros2.git
+Was das Skript erledigt:
+
+    Erstellt den Ordner ~/bunker_ur16e_ws/src.
+
+    Clont ugv_sdk und bunker_ros2.
+
+    Fix den "Stack Smashing" Bug in der bunker_base.hpp.
+
+    Kompiliert den gesamten Workspace mit colcon build.
 ```
-Automatischer Bugfix für den Bunker (Stack Smashing Fix):
-```
-sed -i 's/for (int i = 0; i < 3; ++i)/for (int i = 0; i < 2; ++i)/g' ~/bunker_ur16e_ws/src/ugv_sdk/include/ugv_sdk/details/robot_base/bunker_base.hpp
-```
-Workspace bauen:
-```
-cd ~/bunker_ur16e_ws
-colcon build --symlink-install
 source install/setup.bash
 ```
 ⚙️ Hardware-Setup
